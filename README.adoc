@@ -1,0 +1,5 @@
+= JReleaser Smoke Tests
+
+This repository is used by JReleaser to run all of its 
+link:https://github.com/jreleaser/jreleaser/actions/workflows/smoke-tests.yml[smoke tests].
+
