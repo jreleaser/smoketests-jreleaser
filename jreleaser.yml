@@ -1,10 +1,11 @@
 environment:
   properties:
+    outputDir: out
     jdkPathPrefix: 'build/jdks'
     jdkFilePrefix: 'zulu17.32.13-ca-jdk17.0.2'
     graalFilePrefix: 'graalvm-ce-java17-22.3.0'
-    nativeImageDir: out/jreleaser/assemble/app-native/native-image
-    jpackageDir: out/jreleaser/assemble/app-installer/jpackage
+    nativeImageDir: '{{outputDir}}/jreleaser/assemble/app-native/native-image'
+    jpackageDir: '{{outputDir}}/jreleaser/assemble/app-installer/jpackage'
     skipJpackageResolver: true
     skipNativeImageResolver: true
 
@@ -300,10 +301,10 @@ distributions:
         active: RELEASE
         name: smoketests-copr
     artifacts:
-      - path: out/jreleaser/assemble/{{distributionName}}/java-archive/{{distributionName}}-{{projectVersion}}.zip
+      - path: '{{outputDir}}/jreleaser/assemble/{{distributionName}}/java-archive/{{distributionName}}-{{projectVersion}}.zip'
         extraProperties:
           skipSpec: true
-      - path: out/jreleaser/assemble/{{distributionName}}/java-archive/{{distributionName}}-{{projectVersion}}.tgz
+      - path: '{{outputDir}}/jreleaser/assemble/{{distributionName}}/java-archive/{{distributionName}}-{{projectVersion}}.tgz'
         extraProperties:
           skipFlatpak: true
 
