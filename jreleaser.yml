@@ -381,6 +381,28 @@ distributions:
       - path: '{{nativeImageDir}}/{{distributionName}}-{{projectVersion}}-windows-x86_64.zip'
         platform: 'windows-x86_64'
 
+  app-flat:
+    executable:
+      name: app
+      windowsExtension: bat
+    artifacts:
+      - path: 'src/flat/app'
+        platform: 'osx-x86_64'
+      - path: 'src/flat/app'
+        platform: 'osx-aarch_64'
+      - path: 'src/flat/app'
+        platform: 'linux-x86_64'
+      - path: 'src/flat/app'
+        platform: 'linux-aarch_64'
+      - path: 'src/flat/app'
+        platform: 'linux_musl-x86_64'
+      - path: 'src/flat/app'
+        platform: 'linux_musl-aarch_64'
+      - path: 'src/flat/app.bat'
+        platform: 'windows-x86_64'
+      - path: 'src/flat/app.bat'
+        platform: 'windows-aarch_64'
+
 files:
   artifacts:
     - path: LICENSE
