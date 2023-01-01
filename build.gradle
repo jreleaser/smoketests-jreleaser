@@ -53,13 +53,6 @@ config {
             }
         }
     }
-
-    licensing {
-        mappings += [
-            gdsl: 'SLASHSTAR_STYLE',
-            dsld: 'SLASHSTAR_STYLE'
-        ]
-    }
 }
 
 jdks {
@@ -122,5 +115,726 @@ jdks {
 
 jreleaser {
     dryrun = true
-    configFile = 'jreleaser.yml'
+
+    environment {
+        properties.put('outputDir', 'out')
+        properties.put('jdkPathPrefix', 'build/jdks')
+        properties.put('jdkFilePrefix', 'zulu17.32.13-ca-jdk17.0.2')
+        properties.put('graalFilePrefix', 'graalvm-ce-java17-22.3.0')
+        properties.put('nativeImageDir', '{{outputDir}}/jreleaser/assemble/app-native/native-image')
+        properties.put('jpackageDir', '{{outputDir}}/jreleaser/assemble/app-installer/jpackage')
+        properties.put('skipJpackageResolver', true)
+        properties.put('skipNativeImageResolver', true)
+    }
+
+    hooks {
+        command {
+            before {
+                cmd = 'echo {{event.name}} {{event.type}}'
+            }
+        }
+    }
+
+    project {
+        name = 'app'
+        description = 'Release projects quickly and easily with JReleaser'
+        description = 'Sample application'
+        longDescription = 'Sample application'
+        links {
+            homepage = 'https://acme.com/awesome-app'
+        }
+        authors = ['Andres Almiray']
+        license = 'Apache-2.0'
+        java {
+            groupId = 'com.acme'
+            version = '8'
+            mainClass = 'org.jreleaser.cli.Main'
+        }
+        inceptionYear = '2021'
+        stereotype = 'cli'
+        screenshot {
+            url = 'https://jreleaser.org/images/app-full-release-command.png'
+            caption = 'JReleaser in action'
+        }
+        icon {
+            url = 'https://raw.githubusercontent.com/jreleaser/jreleaser/main/src/media/icon_256x256.png'
+            width = 256
+            height = 256
+        }
+        tags = ['tool', 'java']
+    }
+
+    platform {
+        replacements.put('aarch_64', 'aarch64')
+    }
+
+    announce {
+        article {
+            active = 'ALWAYS'
+            templateDirectory = 'src/jreleaser/templates/article'
+            file {
+                path = 'post.md.tpl'
+            }
+            repository {
+                active = 'ALWAYS'
+                name = 'smoketest-article'
+            }
+        }
+        discord {
+            active = 'ALWAYS'
+        }
+        discourse {
+            active = 'ALWAYS'
+            host = 'https://discourse.acme.com'
+        }
+        discussions {
+            active = 'ALWAYS'
+            organization = 'acme'
+            team = 'tools'
+        }
+        gitter {
+            active = 'ALWAYS'
+        }
+        googleChat {
+            active = 'ALWAYS'
+        }
+        http {
+            news {
+                active = 'ALWAYS'
+                url = 'https;//acme.com/news'
+                authorization = 'BASIC'
+            }
+        }
+        mail {
+            active = 'ALWAYS'
+            host = 'smtp.acme.com'
+            auth = true
+            username = 'duke'
+            from = 'duke@acme.com'
+        }
+        mastodon {
+            active = 'ALWAYS'
+            host = 'https://mastodon.acme.com'
+            statusTemplate = 'src/jreleaser/templates/mastodon.tpl'
+        }
+        mattermost {
+            active = 'ALWAYS'
+        }
+        slack {
+            active = 'ALWAYS'
+            channel = '#announce'
+        }
+        teams {
+            active = 'ALWAYS'
+        }
+        telegram {
+            active = 'ALWAYS'
+        }
+        twitter {
+            active = 'ALWAYS'
+            statusTemplate = 'src/jreleaser/templates/twitter.tpl'
+        }
+        webhooks {
+            acme {
+                active = 'ALWAYS'
+            }
+        }
+        zulip {
+            active = 'ALWAYS'
+            account = 'duke@zulip.acme.com'
+            apiHost = 'https://zulip.acme.com'
+        }
+    }
+
+    release {
+        github {
+            overwrite = true
+            sign = true
+            discussionCategoryName = 'Announcements'
+            issues {
+                enabled = true
+            }
+            changelog {
+                formatted = 'ALWAYS'
+                preset = 'conventional-commits'
+                contributors {
+                    format = '- {{contributorName}}{{#contributorUsernameAsLink}} ({{.}}){{/contributorUsernameAsLink}}'
+                }
+            }
+        }
+    }
+
+    signing {
+        active = 'ALWAYS'
+        armored = true
+    }
+
+    checksum {
+        algorithm('SHA-512')
+    }
+
+    assemble {
+        archive {
+            mvnw {
+                active = 'ALWAYS'
+                attachPlatform = true
+                format('ZIP')
+                format('TAR')
+                format('TAR_BZ2')
+                format('TAR_GZ')
+                format('TAR_XZ')
+                format('TAR_ZST')
+                format('TBZ2')
+                format('TGZ')
+                format('TXZ')
+                fileSet {
+                    input = '.'
+                    include('LICENSE')
+                }
+                fileSet {
+                    input = '.mvn'
+                    output = '.mvn'
+                }
+                fileSet {
+                    input = '.'
+                    output = 'bin'
+                    include('mvnw{.cmd,}')
+                }
+            }
+        }
+
+        javaArchive {
+            app {
+                active = 'ALWAYS'
+                format('ZIP')
+                format('TGZ')
+                fileSet {
+                    input = '.'
+                    include('LICENSE')
+                }
+                mainJar {
+                    path = 'target/{{distributionName}}-{{projectVersion}}.jar'
+                }
+            }
+        }
+
+        jlink {
+            'app-standalone' {
+                active = 'ALWAYS'
+                java {
+                    version = '17'
+                }
+                imageName = '{{distributionName}}-{{projectEffectiveVersion}}'
+                executable = 'app'
+                jdeps {
+                    multiRelease = 'base'
+                    ignoreMissingDeps = true
+                }
+                targetJdk {
+                    path = '{{jdkPathPrefix}}/zulu17Osx/{{jdkFilePrefix}}-macosx_x64/zulu-17.jdk/Contents/Home'
+                    platform = 'osx-x86_64'
+                }
+                targetJdk {
+                    path = '{{jdkPathPrefix}}/zulu17OsxArm/{{jdkFilePrefix}}-macosx_aarch64/zulu-17.jdk/Contents/Home'
+                    platform = 'osx-aarch_64'
+                }
+                targetJdk {
+                    path = '{{jdkPathPrefix}}/zulu17Linux/{{jdkFilePrefix}}-linux_x64'
+                    platform = 'linux-x86_64'
+                }
+                targetJdk {
+                    path = '{{jdkPathPrefix}}/zulu17LinuxArm/{{jdkFilePrefix}}-linux_aarch64'
+                    platform = 'linux-aarch_64'
+                }
+                targetJdk {
+                    path = '{{jdkPathPrefix}}/zulu17LinuxMusl/{{jdkFilePrefix}}-linux_musl_x64'
+                    platform = 'linux_musl-x86_64'
+                }
+                targetJdk {
+                    path = '{{jdkPathPrefix}}/zulu17LinuxMuslArm/{{jdkFilePrefix}}-linux_musl_aarch64'
+                    platform = 'linux_musl-aarch_64'
+                }
+                targetJdk {
+                    path = '{{jdkPathPrefix}}/zulu17Windows/{{jdkFilePrefix}}-win_x64'
+                    platform = 'windows-x86_64'
+                }
+                targetJdk {
+                    path = '{{jdkPathPrefix}}/zulu17WindowsArm/{{jdkFilePrefix}}-win_aarch64'
+                    platform = 'windows-aarch_64'
+                }
+                mainJar {
+                    path = 'target/app-{{projectVersion}}.jar'
+                }
+            }
+        }
+
+        jpackage {
+            'app-installer' {
+                active = 'ALWAYS'
+                jlink = 'app-standalone'
+                attachPlatform = true
+                applicationPackage {
+                    appName = 'app'
+                    appVersion = '{{projectVersionNumber}}'
+                    vendor = 'Acme'
+                }
+                osx {
+                    types = ['pkg']
+                    appName = 'App'
+                    packageName = 'App'
+                    packageIdentifier = 'com.acme.app'
+                    icon = 'src/jreleaser/icons/app.icns'
+                    resourceDir = 'src/app/osx'
+                }
+                linux {
+                    types = ['deb', 'rpm']
+                    maintainer = 'duke@acme.com'
+                    icon = 'src/jreleaser/icons/icon_256x256.png'
+                }
+                windows {
+                    types = ['msi']
+                    console = true
+                    dirChooser = true
+                    icon = 'src/jreleaser/icons/app.ico'
+                    resourceDir = 'src/jpackage/windows'
+                }
+            }
+        }
+
+        nativeImage {
+            'app-native' {
+                active = 'ALWAYS'
+                java {
+                    version = '17'
+                }
+                imageName = '{{distributionName}}-{{projectEffectiveVersion}}'
+                executable = 'app'
+                mainJar {
+                    path = 'target/app-{{projectVersion}}.jar'
+                }
+                graalJdk {
+                    path = '{{jdkPathPrefix}}/graal17Osx/{{graalFilePrefix}}/Contents/Home'
+                    platform = 'osx-x86_64'
+                }
+                graalJdk {
+                    path = '{{jdkPathPrefix}}/graal17Linux/{{graalFilePrefix}}'
+                    platform = 'linux-x86_64'
+                }
+                graalJdk {
+                    path = '{{jdkPathPrefix}}/graal17Windows/{{graalFilePrefix}}'
+                    platform = 'windows-x86_64'
+                }
+                upx {
+                    active = 'ALWAYS'
+                    version = '3.96'
+                }
+                arg('-Duser.language=en')
+                arg('-H:Optimize=2')
+                arg('-H:+RemoveUnusedSymbols')
+            }
+        }
+    }
+
+    distributions {
+        'app-uber' {
+            distributionType = 'SINGLE_JAR'
+            artifact {
+                path = 'target/app-{{projectVersion}}.jar'
+            }
+
+            java {
+                artifactId = 'app'
+            }
+        }
+
+        app {
+            flatpak {
+                active = 'ALWAYS'
+                continueOnError = true
+                componentId = 'com.acme.app'
+                developerName = 'Acme'
+                runtime = 'FREEDESKTOP'
+                runtimeVersion = '21.08'
+                category('Developer Tools')
+                repository {
+                    active = 'RELEASE'
+                    name = 'com.acme.app'
+                    branch = 'master'
+                }
+            }
+            chocolatey {
+                active = 'ALWAYS'
+                remoteBuild = true
+                title = 'App'
+                iconUrl = 'https://rawcdn.githack.com/jreleaser/jreleaser/0934fa1fa3f0bd09c0c8c39fbdeb5df2ce507457/src/media/icon_128x128.png'
+                bucket {
+                    active = 'RELEASE'
+                    name = 'smoketests-chocolatey'
+                }
+            }
+            jbang {
+                active = 'NEVER'
+            }
+            macports {
+                active = 'ALWAYS'
+                category('devel')
+                category('java')
+                maintainer('@duke')
+                repository {
+                    active = 'RELEASE'
+                    name = 'smoketests-macports'
+                }
+            }
+            scoop {
+                active = 'ALWAYS'
+                bucket {
+                    active = 'RELEASE'
+                    name = 'smoketests-scoop'
+                }
+            }
+            sdkman {
+                active = 'RELEASE'
+            }
+            snap {
+                active = 'ALWAYS'
+                remoteBuild = true
+                base = 'core18'
+                architecture {
+                    buildOn('amd64')
+                    buildOn('arm64')
+                }
+            }
+            spec {
+                active = 'ALWAYS'
+                repository {
+                    active = 'RELEASE'
+                    name = 'smoketests-copr'
+                }
+            }
+            artifact {
+                path = '{{outputDir}}/jreleaser/assemble/{{distributionName}}/java-archive/{{distributionName}}-{{projectVersion}}.zip'
+                extraProperties.put('skipSpec', true)
+            }
+            artifact {
+                path = '{{outputDir}}/jreleaser/assemble/{{distributionName}}/java-archive/{{distributionName}}-{{projectVersion}}.tgz'
+                extraProperties.put('skipFlatpak', true)
+            }
+        }
+
+        'app-standalone' {
+            appImage {
+                active = 'ALWAYS'
+                continueOnError = true
+                componentId = 'com.acme.app'
+                developerName = 'App'
+                category('Developement')
+                repository {
+                    active = 'RELEASE'
+                    name = 'smoketests-appimage'
+                    commitMessage = 'app {{tagName}}'
+                }
+            }
+            brew {
+                active = 'ALWAYS'
+                formulaName = 'app'
+                multiPlatform = true
+                repoTap {
+                    active = 'RELEASE'
+                    name = 'homebrew-smoke'
+                    commitMessage = 'app {{tagName}}'
+                }
+            }
+            docker {
+                active = 'ALWAYS'
+                repository {
+                    active = 'RELEASE'
+                    commitMessage = 'app {{tagName}}'
+                }
+                registries {
+                    DEFAULT {
+                        username = 'app'
+                    }
+                }
+                label('org.opencontainers.image.title', 'app')
+                postCommand('VOLUME /workspace')
+                specs {
+                    slim {
+                        imageName('app/app-{{dockerSpecName}}:{{tagName}}')
+                        imageName('app/app-{{dockerSpecName}}:latest')
+                        matcher('platform', 'linux-x86_64')
+                        preCommand('ARG DEBIAN_FRONTEND=noninteractive')
+                        preCommand('ENV TZ=Europe/Zurich')
+                        preCommand('RUN apt-get update && apt-get install -y unzip binutils fakeroot rpm')
+                    }
+                    alpine {
+                        imageName('app/app-{{dockerSpecName}}:{{tagName}}')
+                        imageName('app/app-{{dockerSpecName}}:latest')
+                        matcher('platform', 'linux_musl-x86_64')
+                        preCommand('RUN apk add unzip bash')
+                    }
+                }
+            }
+        }
+
+        'app-installer' {
+            artifact {
+                path = '{{jpackageDir}}/App-{{projectVersionNumber}}-osx-x86_64.pkg'
+                platform = 'osx-x86_64'
+            }
+            artifact {
+                path = '{{jpackageDir}}/app_{{projectVersionNumber}}-1_amd64.deb'
+                platform = 'linux-x86_64'
+            }
+            artifact {
+                path = '{{jpackageDir}}/app-{{projectVersionNumber}}-1.x86_64.rpm'
+                platform = 'linux-x86_64'
+            }
+            artifact {
+                path = '{{jpackageDir}}/app-{{projectVersionNumber}}-windows-x86_64.msi'
+                platform = 'windows-x86_64'
+            }
+        }
+
+        'app-native' {
+            artifact {
+                path = '{{nativeImageDir}}/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip'
+                platform = 'osx-x86_64'
+            }
+            artifact {
+                path = '{{nativeImageDir}}/{{distributionName}}-{{projectVersion}}-linux-x86_64.zip'
+                platform = 'linux-x86_64'
+            }
+            artifact {
+                path = '{{nativeImageDir}}/{{distributionName}}-{{projectVersion}}-windows-x86_64.zip'
+                platform = 'windows-x86_64'
+            }
+        }
+
+        'app-flat' {
+            executable {
+                name = 'app'
+                windowsExtension = 'bat'
+            }
+            artifact {
+                path = 'src/flat/app'
+                platform = 'osx-x86_64'
+            }
+            artifact {
+                path = 'src/flat/app'
+                platform = 'osx-aarch_64'
+            }
+            artifact {
+                path = 'src/flat/app'
+                platform = 'linux-x86_64'
+            }
+            artifact {
+                path = 'src/flat/app'
+                platform = 'linux-aarch_64'
+            }
+            artifact {
+                path = 'src/flat/app'
+                platform = 'linux_musl-x86_64'
+            }
+            artifact {
+                path = 'src/flat/app'
+                platform = 'linux_musl-aarch_64'
+            }
+            artifact {
+                path = 'src/flat/app.bat'
+                platform = 'windows-x86_64'
+            }
+            artifact {
+                path = 'src/flat/app.bat'
+                platform = 'windows-aarch_64'
+            }
+        }
+    }
+
+    files {
+        artifact {
+            path = 'LICENSE'
+            extraProperties.put('skipChecksum', true)
+            extraProperties.put('skipSigning', true)
+        }
+    }
+
+    deploy {
+        maven {
+            github {
+                acme {
+                    active = 'ALWAYS'
+                    stagingRepository('target/staging-deploy')
+                }
+            }
+
+            gitlab {
+                acme {
+                    active = 'ALWAYS'
+                    url = 'https://gitlab.com/api/v4/projects/{{projectIdentifier}}/packages/maven'
+                    projectIdentifier = '12345678'
+                    stagingRepository('target/staging-deploy')
+                }
+            }
+
+            gitea {
+                acme {
+                    active = 'ALWAYS'
+                    url = 'https://codeberg.org/api/packages/{{owner}}/maven'
+                    stagingRepository('target/staging-deploy')
+                }
+            }
+
+            nexus2 {
+                acme {
+                    active = 'ALWAYS'
+                    url = 'https://s01.oss.sonatype.org/service/local'
+                    snapshotUrl = 'https://ossrh.oss.sonatype.org/content/repositories/snapshots/'
+                    closeRepository = true
+                    releaseRepository = true
+                    stagingRepository('target/staging-deploy')
+                }
+            }
+
+            artifactory {
+                acme {
+                    active = 'ALWAYS'
+                    url = 'https://acme.jfrog.io/artifactory/maven'
+                    sign = true
+                    applyMavenCentralRules = true
+                    stagingRepository('target/staging-deploy')
+                }
+            }
+        }
+    }
+
+    download {
+        active = 'ALWAYS'
+        http {
+            d1 {
+                asset {
+                    input = 'https://github.com/jreleaser/jreleaser/raw/main/src/media/icon_256x256.png'
+                    output = '{{projectName}}.png'
+                }
+                asset {
+                    input = 'https://github.com/ixchelruiz/app/releases/download/v1.0.0/app-{{projectVersion}}.zip'
+                    unpack {
+                        enabled = true
+                    }
+                }
+            }
+        }
+
+        ftp {
+            d2 {
+                asset {
+                    input = 'upload/app.png'
+                }
+                asset {
+                    input = 'upload/app-{{projectVersion}}.zip'
+                    unpack {
+                        enabled = true
+                    }
+                }
+            }
+        }
+
+        scp {
+            d3 {
+                asset {
+                    input = '/tmp/upload/app.png'
+                    output = '{{downloaderName}}/{{artifactFile}}'
+                }
+                asset {
+                    input = '/tmp/upload/app-{{projectVersion}}.zip'
+                    unpack {
+                        enabled = true
+                    }
+                }
+            }
+        }
+
+        sftp {
+            d4 {
+                asset {
+                    input = '/tmp/upload/app.png'
+                }
+                asset {
+                    input = '/tmp/upload/app-{{projectVersion}}.zip'
+                    unpack {
+                        enabled = true
+                    }
+                }
+            }
+        }
+    }
+
+    upload {
+        artifactory {
+            u1 {
+                active = 'ALWAYS'
+                host = 'https://acme.jfrog.io/artifactory'
+                repository {
+                    path = 'binaries/{{projectName}}/{{projectVersion}}/{{artifactFile}}'
+                }
+            }
+        }
+
+        ftp {
+            u2 {
+                active = 'ALWAYS'
+                path = 'uploads/{{projectName}}/{{tagName}}/{{artifactFile}}'
+                downloadUrl ='https://download.acme.com/{{projectName}}/{{tagName}}/{{artifactFile}}'
+            }
+        }
+
+        gitea {
+            u3 {
+                active = 'ALWAYS'
+                host = 'gitea.acme.com'
+                owner = 'duke'
+                packageName = 'app'
+            }
+        }
+
+        gitlab {
+            u4 {
+                active = 'ALWAYS'
+                host = 'gitlab.acme.com'
+                packageName = 'app'
+                projectIdentifier = '12345678'
+            }
+        }
+
+        http {
+            u5 {
+                active = 'ALWAYS'
+                uploadUrl = 'https://artifacts.acme.com/{{projectName}}/{{tagName}}/{{artifactFile}}'
+                downloadUrl = 'https://download.acme.com/{{projectName}}/{{tagName}}/{{artifactFile}}'
+            }
+        }
+
+        s3 {
+            u6 {
+                active = 'ALWAYS'
+            }
+        }
+
+        scp {
+            u7 {
+                active = 'ALWAYS'
+                host = 'uploads.acme.com'
+                path = '/uploads/{{projectName}}/{{tagName}}/{{artifactFile}}'
+                downloadUrl = 'https://download.acme.com/{{projectName}}/{{tagName}}/{{artifactFile}}'
+            }
+        }
+
+        sftp {
+            u8 {
+                active = 'ALWAYS'
+                host = 'uploads.acme.com'
+                path = '/uploads/{{projectName}}/{{tagName}}/{{artifactFile}}'
+                downloadUrl = 'https://download.acme.com/{{projectName}}/{{tagName}}/{{artifactFile}}'
+            }
+        }
+    }
 }

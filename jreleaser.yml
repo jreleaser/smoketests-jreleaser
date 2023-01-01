@@ -57,7 +57,7 @@ announce:
     active: ALWAYS
   discourse:
     active: ALWAYS
-    host: https://acme.com
+    host: https://discourse.acme.com
   discussions:
     active: ALWAYS
     organization: acme
@@ -250,8 +250,8 @@ distributions:
 
   app:
     flatpak:
-      continueOnError: true
       active: ALWAYS
+      continueOnError: true
       componentId: com.acme.app
       developerName: Acme
       runtime: freedesktop
@@ -310,8 +310,8 @@ distributions:
 
   app-standalone:
     appImage:
-      continueOnError: true
       active: ALWAYS
+      continueOnError: true
       componentId: com.acme.app
       developerName: App
       categories:
@@ -361,7 +361,6 @@ distributions:
             - 'RUN apk add unzip binutils fakeroot rpm bash'
 
   app-installer:
-    type: NATIVE_PACKAGE
     artifacts:
       - path: '{{jpackageDir}}/App-{{projectVersionNumber}}-osx-x86_64.pkg'
         platform: 'osx-x86_64'
