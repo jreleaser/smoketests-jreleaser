@@ -152,6 +152,7 @@ jreleaser {
         }
         inceptionYear = '2021'
         stereotype = 'cli'
+        vendor = 'Kordamp'
         screenshot {
             url = 'https://jreleaser.org/images/app-full-release-command.png'
             caption = 'JReleaser in action'
@@ -522,6 +523,10 @@ jreleaser {
         }
 
         'app-standalone' {
+            executable {
+                name = 'app'
+                windowsExtension = 'bat'
+            }
             appImage {
                 active = 'ALWAYS'
                 continueOnError = true
@@ -577,6 +582,21 @@ jreleaser {
         }
 
         'app-installer' {
+            winget {
+                active = 'RELEASE'
+                wingetPackage {
+                    name = 'app'
+                }
+                repository {
+                    active = 'ALWAYS'
+                    name = 'app-winget'
+                    commitMessage = 'app {{tagName}}'
+                }
+            }
+            executable {
+                name = 'app'
+                windowsExtension = 'exe'
+            }
             artifact {
                 path = '{{jpackageDir}}/App-{{projectVersionNumber}}-osx-x86_64.pkg'
                 platform = 'osx-x86_64'
@@ -596,6 +616,10 @@ jreleaser {
         }
 
         'app-native' {
+            executable {
+                name = 'app'
+                windowsExtension = 'exe'
+            }
             artifact {
                 path = '{{nativeImageDir}}/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip'
                 platform = 'osx-x86_64'

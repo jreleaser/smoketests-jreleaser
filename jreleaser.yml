@@ -29,6 +29,7 @@ project:
     mainClass: com.acme.Main
   inceptionYear: 2021
   stereotype: cli
+  vendor: Kordamp
   screenshots:
     - url: https://jreleaser.org/images/app-full-release-command.png
       caption: JReleaser in action
@@ -309,6 +310,9 @@ distributions:
           skipFlatpak: true
 
   app-standalone:
+    executable:
+      name: app
+      windowsExtension: bat
     appImage:
       active: ALWAYS
       continueOnError: true
@@ -361,6 +365,17 @@ distributions:
             - 'RUN apk add unzip binutils fakeroot rpm bash'
 
   app-installer:
+    winget:
+      active: RELEASE
+      package:
+        name: app
+      repository:
+        active: ALWAYS
+        name: app-winget
+        commitMessage: 'app {{tagName}}'
+    executable:
+      name: app
+      windowsExtension: exe
     artifacts:
       - path: '{{jpackageDir}}/App-{{projectVersionNumber}}-osx-x86_64.pkg'
         platform: 'osx-x86_64'
@@ -372,6 +387,9 @@ distributions:
         platform: 'windows-x86_64'
 
   app-native:
+    executable:
+      name: app
+      windowsExtension: exe
     artifacts:
       - path: '{{nativeImageDir}}/{{distributionName}}-{{projectVersion}}-osx-x86_64.zip'
         platform: 'osx-x86_64'
