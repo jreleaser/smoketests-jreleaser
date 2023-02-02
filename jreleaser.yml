@@ -67,6 +67,8 @@ announce:
     active: ALWAYS
   googleChat:
     active: ALWAYS
+  linkedin:
+    active: ALWAYS
   http:
     news:
       active: ALWAYS
