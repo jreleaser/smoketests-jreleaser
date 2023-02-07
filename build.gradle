@@ -731,6 +731,16 @@ jreleaser {
                     stagingRepository('target/staging-deploy')
                 }
             }
+
+            azure {
+                acme {
+                    active = 'ALWAYS'
+                    url = 'https://pkgs.dev.azure.com/acme/_packaging/acme/maven/v1'
+                    sign = true
+                    applyMavenCentralRules = true
+                    stagingRepository('target/staging-deploy')
+                }
+            }
         }
     }
 

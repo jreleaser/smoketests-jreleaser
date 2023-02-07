@@ -466,6 +466,14 @@ deploy:
         applyMavenCentralRules: true
         stagingRepositories:
           - target/staging-deploy
+    azure:
+      acme:
+        active: ALWAYS
+        url: https://pkgs.dev.azure.com/acme/_packaging/acme/maven/v1
+        sign: true
+        applyMavenCentralRules: true
+        stagingRepositories:
+          - target/staging-deploy
 
 download:
   active: ALWAYS
