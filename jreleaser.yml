@@ -139,6 +139,8 @@ assemble:
         - TBZ2
         - TGZ
         - TXZ
+      files:
+        - pattern: 'pom.xml'
       fileSets:
         - input: '.'
           includes:
