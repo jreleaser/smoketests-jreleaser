@@ -277,6 +277,18 @@ jreleaser {
         algorithm('SHA-512')
     }
 
+    catalog {
+        sbom {
+            syft {
+                active = 'ALWAYS'
+                files = false
+                pack {
+                    enabled = true
+                }
+            }
+        }
+    }
+
     assemble {
         archive {
             mvnw {
@@ -291,6 +303,13 @@ jreleaser {
                 format('TBZ2')
                 format('TGZ')
                 format('TXZ')
+                artifact {
+                    path = 'jreleaser.yml'
+                    transform = '/META-INF/jreleaser.yml'
+                }
+                files {
+                    pattern = 'pom.xml'
+                }
                 fileSet {
                     input = '.'
                     include('LICENSE')

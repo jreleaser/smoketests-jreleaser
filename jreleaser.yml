@@ -125,10 +125,19 @@ checksum:
   algorithms:
     - SHA-512
 
+catalog:
+  sbom:
+    syft:
+      active: ALWAYS
+      files: false
+      pack:
+        enabled: true
+
 assemble:
   archive:
     mvnw:
       active: ALWAYS
+      attachPlatform: true
       formats:
         - ZIP
         - TAR
@@ -139,6 +148,9 @@ assemble:
         - TBZ2
         - TGZ
         - TXZ
+      artifacts:
+        - path: jreleaser.yml
+          transform: /META-INF/jreleaser.yml
       files:
         - pattern: 'pom.xml'
       fileSets:
