@@ -224,6 +224,9 @@ jreleaser {
         mattermost {
             active = 'ALWAYS'
         }
+        openCollective {
+            active = 'ALWAYS'
+        }
         slack {
             active = 'ALWAYS'
             channel = '#announce'
@@ -279,6 +282,13 @@ jreleaser {
 
     catalog {
         sbom {
+            cyclonedx {
+                active = 'ALWAYS'
+                files = false
+                pack {
+                    enabled = true
+                }
+            }
             syft {
                 active = 'ALWAYS'
                 files = false

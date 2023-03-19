@@ -86,6 +86,8 @@ announce:
     statusTemplate: src/jreleaser/templates/mastodon.tpl
   mattermost:
     active: ALWAYS
+  openCollective:
+    active: ALWAYS
   slack:
     active: ALWAYS
     channel: '#announce'
@@ -127,12 +129,17 @@ checksum:
 
 catalog:
   sbom:
+    cyclonedx:
+      active: ALWAYS
+      files: false
+      pack:
+        enabled: true
     syft:
       active: ALWAYS
       files: false
       pack:
         enabled: true
-
+        
 assemble:
   archive:
     mvnw:
