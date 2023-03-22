@@ -134,11 +134,13 @@ catalog:
       files: false
       pack:
         enabled: true
+        name: '{{projectName}}-{{projectVersion}}-cyclonedx-sboms'
     syft:
       active: ALWAYS
       files: false
       pack:
         enabled: true
+        name: '{{projectName}}-{{projectVersion}}-syft-sboms'
         
 assemble:
   archive:
