@@ -287,6 +287,7 @@ jreleaser {
                 files = false
                 pack {
                     enabled = true
+                    name = '{{projectName}}-{{projectVersion}}-cyclonedx-sboms'
                 }
             }
             syft {
@@ -294,6 +295,7 @@ jreleaser {
                 files = false
                 pack {
                     enabled = true
+                    name = '{{projectName}}-{{projectVersion}}-syft-sboms'
                 }
             }
         }
