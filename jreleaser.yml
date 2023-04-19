@@ -388,6 +388,29 @@ distributions:
             platform: 'linux_musl-x86_64'
           preCommands:
             - 'RUN apk add unzip binutils fakeroot rpm bash'
+    jib:
+      active: ALWAYS
+      repository:
+        active: ALWAYS
+        commitMessage: 'app {{tagName}}'
+      registries:
+        - name: github
+          server: ghcr.io
+      labels:
+        'org.opencontainers.image.title': 'app'
+      specs:
+        slim:
+          imageNames:
+            - 'app/app-{{jibSpecName}}:{{tagName}}'
+            - 'app/app-{{jibSpecName}}:latest'
+          matchers:
+            platform: 'linux-x86_64'
+        alpine:
+          imageNames:
+            - 'app/app-{{jibSpecName}}:{{tagName}}'
+            - 'app/app-{{jibSpecName}}:latest'
+          matchers:
+            platform: 'linux_musl-x86_64'
 
   app-installer:
     winget:

@@ -613,6 +613,31 @@ jreleaser {
                     }
                 }
             }
+            jib {
+                active = 'ALWAYS'
+                repository {
+                    active = 'RELEASE'
+                    commitMessage = 'app {{tagName}}'
+                }
+                registries {
+                    github {
+                        server = 'ghcr.io'
+                    }
+                }
+                label('org.opencontainers.image.title', 'app')
+                specs {
+                    slim {
+                        imageName('app/app-{{jibSpecName}}:{{tagName}}')
+                        imageName('app/app-{{jibSpecName}}:latest')
+                        matcher('platform', 'linux-x86_64')
+                    }
+                    alpine {
+                        imageName('app/app-{{jibSpecName}}:{{tagName}}')
+                        imageName('app/app-{{jibSpecName}}:latest')
+                        matcher('platform', 'linux_musl-x86_64')
+                    }
+                }
+            }
         }
 
         'app-installer' {
