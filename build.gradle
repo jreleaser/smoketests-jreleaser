@@ -130,7 +130,13 @@ jreleaser {
     hooks {
         command {
             before {
-                cmd = 'echo {{event.name}} {{event.type}}'
+                cmd = 'echo "{{event.name}} {{event.type}}"'
+            }
+        }
+        script {
+            before {
+                run = 'echo "{{event.name}} {{event.type}}"'
+                platforms = ['!windows']
             }
         }
     }
