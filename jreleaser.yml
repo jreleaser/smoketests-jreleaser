@@ -10,14 +10,24 @@ environment:
     skipNativeImageResolver: true
 
 hooks:
+  environment:
+    KEY_GLOBAL: global
   script:
+    environment:
+      KEY_SCRIPT: script
     before:
       - run: 'echo "{{event.name}} {{event.type}}"'
+        environment:
+          KEY_LOCAL: local
         platforms:
           - '!windows'
   command:
+    environment:
+      KEY_COMMAND: command
     before:
       - cmd: 'echo "{{event.name}} {{event.type}}"'
+        environment:
+          KEY_LOCAL: local
 
 project:
   name: app
