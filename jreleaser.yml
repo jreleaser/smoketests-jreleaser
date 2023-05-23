@@ -159,6 +159,8 @@ catalog:
       pack:
         enabled: true
         name: '{{projectName}}-{{projectVersion}}-syft-sboms'
+  slsa:
+    active: ALWAYS
         
 assemble:
   archive:

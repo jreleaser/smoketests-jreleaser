@@ -314,6 +314,9 @@ jreleaser {
                 }
             }
         }
+        slsa {
+            active = 'ALWAYS'
+        }
     }
 
     assemble {
