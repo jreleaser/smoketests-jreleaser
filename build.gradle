@@ -317,6 +317,11 @@ jreleaser {
         slsa {
             active = 'ALWAYS'
         }
+        swid {
+            'swid-tag' {
+                active = 'ALWAYS'
+            }
+        }
     }
 
     assemble {
@@ -352,6 +357,9 @@ jreleaser {
                     input = '.'
                     output = 'bin'
                     include('mvnw{.cmd,}')
+                }
+                swid {
+                    tagRef = 'swid-tag'
                 }
             }
         }

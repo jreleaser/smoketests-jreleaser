@@ -161,6 +161,9 @@ catalog:
         name: '{{projectName}}-{{projectVersion}}-syft-sboms'
   slsa:
     active: ALWAYS
+  swid:
+    swid-tag:
+      active: ALWAYS
         
 assemble:
   archive:
@@ -191,6 +194,8 @@ assemble:
         - input: '.'
           output: 'bin'
           includes: [ 'mvnw{.cmd,}' ]
+      swid:
+        tagRef: swid-tag
 
   javaArchive:
     app:
