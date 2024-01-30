@@ -957,3 +957,12 @@ jreleaser {
         }
     }
 }
+
+afterEvaluate {
+    ['zulu17Linux', 'zulu17LinuxArm', 'zulu17LinuxMusl', 'zulu17LinuxMuslArm',
+    'zulu17Windows', 'zulu17WindowsArm', 'zulu17Osx', 'zulu17OsxArm',
+    'graal17Osx', 'graal17Linux', 'graal17Windows'].each { jdk ->
+        def copyTask = project.tasks.findByName('copyJdkFromCache' + jdk.capitalize())
+        if (copyJdksToCache && copyTask) copyTask.dependsOn(copyJdksToCache)
+    }
+}
