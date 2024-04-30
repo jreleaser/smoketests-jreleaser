@@ -2,8 +2,8 @@ environment:
   properties:
     outputDir: out
     jdkPathPrefix: 'build/jdks'
-    jdkFilePrefix: 'zulu17.32.13-ca-jdk17.0.2'
-    graalFilePrefix: 'graalvm-ce-java17-22.3.0'
+    jdkFilePrefix: 'zulu17.50.19-ca-jdk17.0.11'
+    graalFilePrefix: 'graalvm-community-openjdk-22.0.1+8.1'
     nativeImageDir: '{{outputDir}}/jreleaser/assemble/app-native/native-image'
     jpackageDir: '{{outputDir}}/jreleaser/assemble/app-installer/jpackage'
     skipJpackageResolver: true
@@ -277,11 +277,11 @@ assemble:
       mainJar:
         path: 'target/app-{{projectVersion}}.jar'
       graalJdks:
-        - path: '{{jdkPathPrefix}}/graal17Osx/{{graalFilePrefix}}/Contents/Home'
+        - path: '{{jdkPathPrefix}}/graal22Osx/{{graalFilePrefix}}/Contents/Home'
           platform: 'osx-x86_64'
-        - path: '{{jdkPathPrefix}}/graal17Linux/{{graalFilePrefix}}'
+        - path: '{{jdkPathPrefix}}/graal22Linux/{{graalFilePrefix}}'
           platform: 'linux-x86_64'
-        - path: '{{jdkPathPrefix}}/graal17Windows/{{graalFilePrefix}}'
+        - path: '{{jdkPathPrefix}}/graal22Windows/{{graalFilePrefix}}'
           platform: 'windows-x86_64'
       upx:
         active: ALWAYS
