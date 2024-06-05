@@ -314,6 +314,9 @@ jreleaser {
                 }
             }
         }
+        github {
+            active = 'ALWAYS'
+        }
         slsa {
             active = 'ALWAYS'
         }
