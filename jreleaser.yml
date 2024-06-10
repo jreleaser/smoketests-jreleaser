@@ -211,6 +211,25 @@ assemble:
             - 'LICENSE'
       mainJar:
         path: target/{{distributionName}}-{{projectVersion}}.jar
+      java:
+        jvmOptions:
+          universal:
+            - '-Dfoo={{projectVersion}}'
+          unix:
+            - '-Dbar={{projectVersion}}'
+          osx:
+            - '-Dfoobar={{projectVersion}}'
+          linux:
+            - '-Dbazinga={{projectVersion}}'
+        environmentVariables:
+          universal:
+            FOO: foo
+          unix:
+            BAR: bar
+          osx:
+            FOOBAR: foobar
+          linux:
+            BAZINGA: bazinga
 
   jlink:
     app-standalone:
