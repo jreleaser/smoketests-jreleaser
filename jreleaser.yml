@@ -9,6 +9,15 @@ environment:
     skipJpackageResolver: true
     skipNativeImageResolver: true
 
+matrix:
+  rows:
+    - { goos: darwin,  goarch: arm64, platform: osx-aarch_64     }
+    - { goos: darwin,  goarch: amd64, platform: osx-x86_64       }
+    - { goos: linux,   goarch: arm64, platform: linux-aarch_64   }
+    - { goos: linux,   goarch: amd64, platform: linux-x86_64     }
+    - { goos: windows, goarch: arm64, platform: windows-aarch_64 }
+    - { goos: windows, goarch: amd64, platform: windows-x86_64   }
+
 hooks:
   environment:
     KEY_GLOBAL: global
@@ -21,6 +30,15 @@ hooks:
           KEY_LOCAL: local
         platforms:
           - '!windows'
+      - run: 'echo "building ${GOOS}-${GOARCH}"'
+        applyDefaultMatrix: true
+        verbose: true
+        environment:
+          GOOS: '{{ matrix.goos }}'
+          GOARCH: '{{ matrix.goarch }}'
+        filter:
+          includes: ['assemble']
+
   command:
     environment:
       KEY_COMMAND: command
@@ -38,10 +56,11 @@ project:
   authors:
     - Andres Almiray
   license: Apache-2.0
-  java:
-    groupId: com.acme
-    version: 8
-    mainClass: com.acme.Main
+  languages:
+    java:
+      groupId: com.acme
+      version: 8
+      mainClass: com.acme.Main
   inceptionYear: 2021
   stereotype: cli
   vendor: Kordamp
@@ -311,6 +330,15 @@ assemble:
         - '-Duser.language=en'
         - '-H:Optimize=2'
         - '-H:+RemoveUnusedSymbols'
+
+  deb:
+    app-deb:
+      active: ALWAYS
+      assemblerRef: app
+      executable: app
+      control:
+        packageName: app
+        maintainer: 'Duke <duke@acme.com>'
 
 distributions:
   app-uber:

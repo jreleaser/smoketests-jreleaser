@@ -127,6 +127,18 @@ jreleaser {
         properties.put('skipNativeImageResolver', true)
     }
 
+    matrix {
+        //variable('os', [ 'linux', 'osx', 'windows' ])
+        //variable('arch', [ 'arm64', 'amd64' ])
+
+        row(os: 'linux', arch: 'arm64')
+        row(os: 'linux', arch: 'amd64')
+        row(os: 'osx', arch: 'arm64')
+        row(os: 'osx', arch: 'amd64')
+        row(os: 'windows', arch: 'arm64')
+        row(os: 'windows', arch: 'amd64')
+    }
+
     hooks {
         environment('KEY_GLOBAL', 'global')
         script {
@@ -136,7 +148,18 @@ jreleaser {
                 environment('KEY_LOCAL', 'local')
                 platforms = ['!windows']
             }
+            before {
+                run = 'echo "building ${GOOS}-${GOARCH}"'
+                applyDefaultMatrix = true
+                verbose = true
+                environment('GOOS', '{{ matrix.goos }}')
+                environment('GOARCH', '{{ matrix.goarch }}')
+                filter {
+                    includes = ['assemble']
+                }
+            }
         }
+
         command {
             environment('KEY_COMMAND', 'command')
             before {
@@ -156,10 +179,12 @@ jreleaser {
         }
         authors = ['Andres Almiray']
         license = 'Apache-2.0'
-        java {
-            groupId = 'com.acme'
-            version = '8'
-            mainClass = 'org.jreleaser.cli.Main'
+        languages {
+            java {
+                groupId = 'com.acme'
+                version = '8'
+                mainClass = 'org.jreleaser.cli.Main'
+            }
         }
         inceptionYear = '2021'
         stereotype = 'cli'
@@ -509,6 +534,18 @@ jreleaser {
                 arg('-Duser.language=en')
                 arg('-H:Optimize=2')
                 arg('-H:+RemoveUnusedSymbols')
+            }
+        }
+
+        deb {
+            'app-deb' {
+                active = 'ALWAYS'
+                assemblerRef = 'app'
+                executable = 'mvnw'
+                control {
+                    packageName = 'app'
+                    maintainer = 'Duke <duke@acme.com>'
+                }
             }
         }
     }
