@@ -132,9 +132,6 @@ announce:
     active: ALWAYS
   telegram:
     active: ALWAYS
-  twitter:
-    active: ALWAYS
-    statusTemplate: src/jreleaser/templates/twitter.tpl
   webhooks:
     acme:
       active: ALWAYS
