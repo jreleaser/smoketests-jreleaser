@@ -560,6 +560,12 @@ deploy:
         projectIdentifier: 12345678
         stagingRepositories:
           - target/staging-deploy
+    forgejo:
+      acme:
+        active: ALWAYS
+        url: https://codeberg.org/api/packages/{{owner}}/maven
+        stagingRepositories:
+          - target/staging-deploy
     gitea:
       acme:
         active: ALWAYS
@@ -675,3 +681,9 @@ upload:
       host: uploads.acme.com
       path: '/uploads/{{projectName}}/{{tagName}}/{{artifactFile}}'
       downloadUrl: 'https://download.acme.com/{{projectName}}/{{tagName}}/{{artifactFile}}'
+  forgejo:
+    u9:
+      active: ALWAYS
+      host: forgejo.acme.com
+      owner: duke
+      packageName: app
