@@ -870,6 +870,14 @@ jreleaser {
                 }
             }
 
+            nexus3 {
+                acme {
+                    active = 'ALWAYS'
+                    url = 'https://nexus3.acme.com/service/rest/v1/components?repository=maven-releases'
+                    stagingRepository('target/staging-deploy')
+                }
+            }
+
             artifactory {
                 acme {
                     active = 'ALWAYS'

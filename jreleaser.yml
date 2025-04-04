@@ -587,6 +587,12 @@ deploy:
         releaseRepository: true
         stagingRepositories:
           - target/staging-deploy
+    nexus3:
+      acme:
+        active: ALWAYS
+        url: https://nexus3.acme.com/service/rest/v1/components?repository=maven-releases
+        stagingRepositories:
+          - target/staging-deploy
     artifactory:
       acme:
         active: ALWAYS
