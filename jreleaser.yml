@@ -441,20 +441,20 @@ distributions:
       postCommands:
         - 'VOLUME /workspace'
       specs:
-        slim:
+        app-slim:
           imageNames:
-            - 'app/app-{{dockerSpecName}}:{{tagName}}'
-            - 'app/app-{{dockerSpecName}}:latest'
+            - 'app/{{dockerSpecName}}:{{tagName}}'
+            - 'app/{{dockerSpecName}}:latest'
           matchers:
             platform: 'linux-x86_64'
           preCommands:
             - 'ARG DEBIAN_FRONTEND=noninteractive'
             - 'ENV TZ=Europe/Zurich'
             - 'RUN apt-get update && apt-get install -y unzip binutils fakeroot rpm'
-        alpine:
+        app-alpine:
           imageNames:
-            - 'app/app-{{dockerSpecName}}:{{tagName}}'
-            - 'app/app-{{dockerSpecName}}:latest'
+            - 'app/{{dockerSpecName}}:{{tagName}}'
+            - 'app/{{dockerSpecName}}:latest'
           matchers:
             platform: 'linux_musl-x86_64'
           preCommands:

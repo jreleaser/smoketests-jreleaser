@@ -673,17 +673,17 @@ jreleaser {
                 label('org.opencontainers.image.title', 'app')
                 postCommand('VOLUME /workspace')
                 specs {
-                    slim {
-                        imageName('app/app-{{dockerSpecName}}:{{tagName}}')
-                        imageName('app/app-{{dockerSpecName}}:latest')
+                    'app-slim' {
+                        imageName('app/{{dockerSpecName}}:{{tagName}}')
+                        imageName('app/{{dockerSpecName}}:latest')
                         matcher('platform', 'linux-x86_64')
                         preCommand('ARG DEBIAN_FRONTEND=noninteractive')
                         preCommand('ENV TZ=Europe/Zurich')
                         preCommand('RUN apt-get update && apt-get install -y unzip binutils fakeroot rpm')
                     }
-                    alpine {
-                        imageName('app/app-{{dockerSpecName}}:{{tagName}}')
-                        imageName('app/app-{{dockerSpecName}}:latest')
+                    'app-alpine' {
+                        imageName('app/{{dockerSpecName}}:{{tagName}}')
+                        imageName('app/{{dockerSpecName}}:latest')
                         matcher('platform', 'linux_musl-x86_64')
                         preCommand('RUN apk add unzip bash')
                     }
